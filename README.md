@@ -37,7 +37,6 @@ Add to Cursor MCP settings:
 git clone https://github.com/securecheckio/colosseum-copilot-mcp.git
 cd colosseum-copilot-mcp
 npm install
-npm run build
 ```
 
 Add to Cursor MCP settings:
@@ -47,7 +46,7 @@ Add to Cursor MCP settings:
   "mcpServers": {
     "colosseum-copilot": {
       "command": "node",
-      "args": ["/absolute/path/to/colosseum-copilot-mcp/build/index.js"],
+      "args": ["/absolute/path/to/colosseum-copilot-mcp/index.js"],
       "env": {
         "COLOSSEUM_COPILOT_PAT": "your-token-here"
       }

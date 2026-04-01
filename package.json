@@ -4,16 +4,11 @@
   "description": "MCP server for Colosseum Copilot - Solana startup research with 5,400+ hackathon projects and 84,000+ archive documents",
   "type": "module",
   "bin": {
-    "colosseum-copilot-mcp": "./build/index.js"
+    "colosseum-copilot-mcp": "./index.js"
   },
   "files": [
-    "build"
+    "index.js"
   ],
-  "scripts": {
-    "build": "tsc && chmod +x build/index.js",
-    "dev": "tsc --watch",
-    "prepare": "npm run build"
-  },
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -27,10 +22,6 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4"
-  },
-  "devDependencies": {
-    "@types/node": "^22.10.2",
-    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=18.0.0"

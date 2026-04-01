@@ -30,7 +30,7 @@ if (!PAT) {
 }
 
 // API Helper
-async function callAPI(endpoint: string, options: RequestInit = {}) {
+async function callAPI(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
   const response = await fetch(url, {
     ...options,
@@ -387,16 +387,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           techStack,
           problemTags,
           solutionTags,
-        } = args as any;
+        } = args;
 
-        const filters: any = {};
+        const filters = {};
         if (winnersOnly !== undefined) filters.winnersOnly = winnersOnly;
         if (acceleratorOnly !== undefined) filters.acceleratorOnly = acceleratorOnly;
         if (techStack) filters.techStack = techStack;
         if (problemTags) filters.problemTags = problemTags;
         if (solutionTags) filters.solutionTags = solutionTags;
 
-        const body: any = {
+        const body = {
           limit,
           offset,
           diversify,
@@ -430,9 +430,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           maxChunksPerDoc = 2,
           intent = 'docs',
           minSimilarity = 0.2,
-        } = args as any;
+        } = args;
 
-        const body: any = {
+        const body = {
           query,
           limit,
           offset,
@@ -458,7 +458,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_get_project': {
-        const { slug } = args as any;
+        const { slug } = args;
         const result = await callAPI(`/projects/by-slug/${encodeURIComponent(slug)}`);
 
         return {
@@ -472,7 +472,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_get_archive_document': {
-        const { documentId, offset = 0, maxChars = 8000 } = args as any;
+        const { documentId, offset = 0, maxChars = 8000 } = args;
         const result = await callAPI(
           `/archives/${encodeURIComponent(documentId)}?offset=${offset}&maxChars=${maxChars}`
         );
@@ -501,7 +501,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_analyze_cohort': {
-        const { cohort, dimensions, topK = 10, samplePerBucket = 2 } = args as any;
+        const { cohort, dimensions, topK = 10, samplePerBucket = 2 } = args;
 
         const result = await callAPI('/analyze', {
           method: 'POST',
@@ -524,7 +524,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_compare_cohorts': {
-        const { cohortA, cohortB, dimensions, topK = 10 } = args as any;
+        const { cohortA, cohortB, dimensions, topK = 10 } = args;
 
         const result = await callAPI('/compare', {
           method: 'POST',
@@ -547,7 +547,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_get_cluster': {
-        const { key } = args as any;
+        const { key } = args;
         const result = await callAPI(`/clusters/${encodeURIComponent(key)}`);
 
         return {
@@ -561,9 +561,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_suggest_source': {
-        const { url, name, reason } = args as any;
+        const { url, name, reason } = args;
 
-        const body: any = { url };
+        const body = { url };
         if (name) body.name = name;
         if (reason) body.reason = reason;
 
@@ -583,9 +583,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'colosseum_feedback': {
-        const { category, message, severity = 'medium', context } = args as any;
+        const { category, message, severity = 'medium', context } = args;
 
-        const body: any = { category, message, severity };
+        const body = { category, message, severity };
         if (context) body.context = context;
 
         const result = await callAPI('/feedback', {
