@@ -17,6 +17,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 
 // Configuration
@@ -58,9 +60,228 @@ const server = new Server(
   {
     capabilities: {
       tools: {},
+      resources: {},
     },
   }
 );
+
+// Resource: Deep Dive Guide
+const DEEP_DIVE_GUIDE = `# Colosseum Copilot Deep Dive Workflows
+
+## When to Use Deep Dive
+
+Trigger a full research workflow when the user says:
+- "vet this idea"
+- "deep dive" or "full analysis"
+- "should I build X?" or "is X worth building?"
+- "validate this idea"
+
+## The 8-Step Deep Dive Process
+
+### 1. Parallel Data Gathering
+Run these searches simultaneously:
+- \`colosseum_search_projects\` with relevant query
+- \`colosseum_search_archives\` with conceptual keywords
+- \`colosseum_get_filters\` to understand available hackathons/tracks
+
+### 2. Project Search (Semantic)
+Use \`colosseum_search_projects\` with:
+- Natural language query describing the idea
+- Filters: \`winnersOnly: true\` to see prize winners
+- \`limit: 10-15\` for comprehensive coverage
+- Note the \`similarity\` scores and \`evidence\` snippets
+
+### 3. Archive Search (Conceptual Precedents)
+Use \`colosseum_search_archives\` with:
+- 3-6 focused keywords (not full sentences)
+- \`limit: 5-8\` documents
+- \`intent: "ideation"\` for broader recall
+- Look for foundational concepts, not just implementations
+
+### 4. Landscape Check
+- Check \`crowdedness\` scores from project results
+- Use \`cluster\` data to understand related projects
+- For top matches, call \`colosseum_get_project\` to get full details
+
+### 5. Hackathon Analysis
+Use \`colosseum_analyze_cohort\` to understand trends:
+- Analyze recent hackathons by \`problemTags\`
+- Check \`techStack\` distribution
+- Identify \`solutionTags\` patterns
+
+### 6. Incumbent Validation & Gap Classification
+
+**Full Gap**: No matching projects found
+- Evidence: Empty search results or very low similarity (<0.3)
+- Response: "Nobody has built this in Colosseum hackathons"
+
+**Partial Gap**: Projects exist but incomplete
+- Evidence: Similar projects but different segment/UX/geography
+- Classify by:
+  - **Segment**: Different target users (B2B vs B2C, retail vs institutional)
+  - **UX**: Different interface (mobile vs web, CLI vs GUI)
+  - **Geographic**: Different regions or regulatory contexts
+  - **Pricing**: Different business models
+  - **Integration**: Different protocols or chains
+- Response: "X built this, but focused on Y. Gap exists in Z"
+
+**False Gap**: Already well-covered
+- Evidence: Multiple high-similarity projects (>0.6), prize winners
+- Response: "This is crowded. Projects A, B, C already built this"
+
+### 7. Opportunity Ranking
+Based on evidence, rank opportunities by:
+1. **Gap size**: How much is missing?
+2. **Validation**: Did similar ideas win prizes?
+3. **Crowdedness**: How many competitors?
+4. **Archive support**: Is there research backing this?
+5. **Trend alignment**: Is this a growing category?
+
+### 8. Structured Report Format
+
+\`\`\`
+## Similar Projects
+[List 5-8 projects with slugs, similarity scores, and what they built]
+
+## Archive Insights
+[3-5 key concepts from research papers/historical docs with citations]
+
+## Current Landscape
+[Crowdedness assessment, cluster analysis, winning patterns]
+
+## Gap Classification
+[Full / Partial / False with specific evidence]
+
+## Top Opportunity
+### Problem Statement
+[What specific problem to solve]
+
+### Wedge / Differentiation
+[Specific angle: segment, UX, integration, etc.]
+
+### Revenue Model
+[Based on similar projects and market]
+
+### GTM Strategy
+[Based on winning project patterns]
+
+### Why Crypto / Why Solana
+[Technical fit from archive research]
+
+### Risks
+[Based on crowdedness and validation]
+\`\`\`
+
+## Evidence Floors by Query Type
+
+| Query Type | Required Evidence |
+|------------|------------------|
+| Pure retrieval | Project slugs from search results |
+| Archive retrieval | Document titles and URLs |
+| Comparison | Project evidence for each side + archive citation |
+| Evaluative | Project + archive + landscape evidence |
+| Build guidance | Project + archive + incumbent + landscape evidence |
+
+## Common Patterns
+
+### Pattern: Validate Startup Idea
+\`\`\`
+User: "I want to build a privacy-preserving stablecoin wallet on Solana"
+
+Workflow:
+1. Search projects: "privacy stablecoin wallet"
+2. Search archives: "privacy electronic cash zero knowledge"
+3. Get filters to see recent hackathons
+4. Analyze cohort: privacy category trends
+5. Get full details on top 2-3 matches
+6. Classify gap: segment/UX/integration difference
+7. Report with specific opportunity
+\`\`\`
+
+### Pattern: Research Competitive Landscape
+\`\`\`
+User: "Who's building DeFi lending on Solana?"
+
+Workflow:
+1. Search projects: "defi lending" with winners filter
+2. Analyze cohort: lending category by tech stack
+3. Get cluster data for lending projects
+4. Search archives: "defi lending protocols"
+5. Compare cohorts: winners vs non-winners
+6. Report crowdedness and winning patterns
+\`\`\`
+
+### Pattern: Hackathon Trend Analysis
+\`\`\`
+User: "What are the trending problem domains in Breakout?"
+
+Workflow:
+1. Get filters to confirm hackathon slug
+2. Analyze cohort: Breakout by problemTags
+3. Compare with previous hackathon (e.g., Radar)
+4. Identify shift in focus areas
+5. Sample top projects per category
+6. Report with trend insights
+\`\`\`
+
+## Tips for Best Results
+
+1. **Always start with filters** - Call \`colosseum_get_filters\` first to get valid hackathon slugs and understand chronology
+
+2. **Use evidence snippets** - The \`evidence\` field in search results tells you WHY it matched
+
+3. **Check similarity scores**:
+   - >0.6 = very relevant
+   - 0.4-0.6 = relevant
+   - <0.4 = tangentially related
+
+4. **Archive search keywords** - Use 3-6 focused conceptual terms, not full sentences:
+   - Good: "prediction markets futarchy governance"
+   - Bad: "how do prediction markets work for governance"
+
+5. **Iterate searches** - If initial results are off, refine query based on what you learned
+
+6. **Get full project details** - For top 2-3 matches, always call \`colosseum_get_project\` to see complete description
+
+7. **Use cohort analysis** - Understand ecosystem patterns before making recommendations
+
+8. **Cite everything** - Always reference project slugs, archive titles, and hackathon names
+
+9. **Be honest about gaps** - Don't sugar-coat crowded spaces or false gaps
+
+10. **Parallel where possible** - Run independent searches simultaneously for speed
+`;
+
+// List available resources
+server.setRequestHandler(ListResourcesRequestSchema, async () => ({
+  resources: [
+    {
+      uri: 'colosseum://deep-dive-guide',
+      name: 'Deep Dive Workflows Guide',
+      description: 'Complete guide for orchestrating Colosseum Copilot tools into deep research workflows. Read this to understand how to validate startup ideas, analyze competitive landscapes, and conduct thorough market research.',
+      mimeType: 'text/markdown',
+    },
+  ],
+}));
+
+// Read resource content
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+  
+  if (uri === 'colosseum://deep-dive-guide') {
+    return {
+      contents: [
+        {
+          uri,
+          mimeType: 'text/markdown',
+          text: DEEP_DIVE_GUIDE,
+        },
+      ],
+    };
+  }
+  
+  throw new Error(`Unknown resource: ${uri}`);
+});
 
 // List available tools
 server.setRequestHandler(ListToolsRequestSchema, async () => ({

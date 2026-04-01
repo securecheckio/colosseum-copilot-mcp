@@ -59,6 +59,8 @@ Add to Cursor MCP settings:
 
 ## Usage
 
+The MCP server includes a **Deep Dive Guide resource** that teaches the AI how to orchestrate tools for comprehensive research workflows. The AI will automatically read this when needed.
+
 Ask your Cursor AI:
 
 ```
@@ -73,7 +75,26 @@ What were the most popular problem domains in Breakout hackathon?
 Compare tech stacks used by winners vs non-winners
 ```
 
-## Tools Available
+**For deep research**, trigger the full workflow:
+
+```
+Vet this idea: [your startup idea]
+
+Deep dive on DeFi lending in Solana
+
+Should I build a privacy-preserving stablecoin wallet?
+
+Validate this: cross-border payment system with stablecoins
+```
+
+The AI will automatically orchestrate multiple tools following the 8-step deep dive process.
+
+## What's Included
+
+### Resources
+- **Deep Dive Guide** (`colosseum://deep-dive-guide`) - Complete workflow orchestration guide that teaches the AI how to conduct comprehensive research using the tools below
+
+### Tools (11 total)
 
 | Tool | Description |
 |------|-------------|
