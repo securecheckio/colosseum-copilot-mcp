@@ -8,14 +8,9 @@ MCP server that brings Colosseum Copilot to Cursor - search 5,400+ Solana hackat
 
 Get free PAT at [arena.colosseum.org/copilot](https://arena.colosseum.org/copilot)
 
-**2. Install & Build**
+**2. Choose Installation Method**
 
-```bash
-npm install
-npm run build
-```
-
-**3. Configure Cursor**
+### Option A: Run from GitHub (Easiest)
 
 Add to Cursor MCP settings:
 
@@ -23,8 +18,11 @@ Add to Cursor MCP settings:
 {
   "mcpServers": {
     "colosseum-copilot": {
-      "command": "node",
-      "args": ["/absolute/path/to/build/index.js"],
+      "command": "npx",
+      "args": [
+        "-y",
+        "github:securecheckio/colosseum-copilot-mcp"
+      ],
       "env": {
         "COLOSSEUM_COPILOT_PAT": "your-token-here"
       }
@@ -33,7 +31,32 @@ Add to Cursor MCP settings:
 }
 ```
 
-**4. Restart Cursor**
+### Option B: Run from Local Clone
+
+```bash
+git clone https://github.com/securecheckio/colosseum-copilot-mcp.git
+cd colosseum-copilot-mcp
+npm install
+npm run build
+```
+
+Add to Cursor MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "colosseum-copilot": {
+      "command": "node",
+      "args": ["/absolute/path/to/colosseum-copilot-mcp/build/index.js"],
+      "env": {
+        "COLOSSEUM_COPILOT_PAT": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+**3. Restart Cursor**
 
 ## Usage
 
